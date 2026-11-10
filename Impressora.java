@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 class Impressora {
 
     boolean impresionState = false; // Se tiver false significa que a conexão está desligada, se true ela esta ligada.
@@ -10,13 +12,13 @@ class Impressora {
 
 
     // Atalhos para mostrar mensagens no console   // // //
-        static void print(Object text) {                 //
-            System.out.print(text);                      //
-        }                                                //
-                                                         //
-        static void println(Object text) {               //
-            System.out.println(text);                    //
-        }                                                //
+    static void print(Object text) {                 //
+        System.out.print(text);                      //
+    }                                                //
+    //
+    static void println(Object text) {               //
+        System.out.println(text);                    //
+    }                                                //
     // Fim dos atalhos para mostrar mensagens no console //
 
 
@@ -126,14 +128,46 @@ class Impressora {
     boolean isConnected() { // isso serve pra ver se a impressora está ativa (ativa = ture | desativada = false) exemplo na linha 132
         return impresionState;
     }
+
+    void imprimeTexto(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Dados: ");
+        String dados = sc.nextLine();
+        System.out.println("Posição: ");
+        int posicao = sc.nextInt();
+        System.out.println("Estilo: ");
+        int estilo = sc.nextInt();
+        System.out.println("Tamanho: ");
+        int tamanho = sc.nextInt();
+        System.out.println("Copias: ");
+        int copias = sc.nextInt();
+
+        int retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
+
+        if(retorno >= 0) {
+            for (int c = 0; c <= copias; c++) {
+                System.out.println("Impressão de Texto OK. Retorno " + retorno);
+            }
+        }else{
+            System.out.println("Erro ao imprimir texto. Retorno " + retorno);
+        }
+    }
+
+    public static void main(String[] args){
+        System.out.println("Impressora Iniciada.");
+    }
 }
 
 /**
-    if (isConnected() == true){
-        println("A conexão está ativa");
+ if (isConnected() == true){
+ println("A conexão está ativa");
 
-    } else if (isConnected() == false){
-        println("A conexão está desativada");
+ } else if (isConnected() == false){
+ println("A conexão está desativada");
 
-    }
+ }
  */
+
+
+
