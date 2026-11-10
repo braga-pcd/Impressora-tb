@@ -132,6 +132,8 @@ class Impressora {
     void imprimeTexto(){
         Scanner sc = new Scanner(System.in);
 
+        println("\n=== IMPRESSÃO DE TEXTO ===");
+
         System.out.println("Dados: ");
         String dados = sc.nextLine();
         System.out.println("Posição: ");
@@ -153,11 +155,8 @@ class Impressora {
             System.out.println("Erro ao imprimir texto. Retorno " + retorno);
         }
     }
-
-    public static void main(String[] args){
-        System.out.println("Impressora Iniciada.");
-    }
 }
+
 
 /**
  if (isConnected() == true){
