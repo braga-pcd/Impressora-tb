@@ -221,10 +221,10 @@ A maioria dos comandos retorna `0` quando funciona. **`ImpressaoTexto` é uma ex
 
 | Integrante | Responsabilidade |
 |---|---|
-| **Nicolas BX** | **Parte 1:** login e menu principal |
+| **Nicolas** | **Parte 1:** login e menu principal |
 | **Kauã** | **Parte 2:** configuração e conexão da impressora |
-| **PREENCHER NOME** | **Parte 3:** operações de impressão |
-| **PREENCHER NOME** | **Parte 4:** funções extras, testes e documentação |
+| **Pedro** | **Parte 3:** operações de impressão |
+| **Jefferson** | **Parte 4:** funções extras, testes e documentação |
 
 > Antes da entrega, completar os nomes de todos os integrantes e conferir os commits de cada um no GitHub.
 
