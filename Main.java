@@ -2,7 +2,7 @@ public class Main {
     public static void main(String[] args) {
 
         Impressora imp = new Impressora();
-        // imp.simular = true; // Teste sem impressora fisica
+        imp.simular = true; // Teste sem impressora fisica
 
         Impressora.println("=== TESTE USB ===");
         imp.configurarIm(1, "i9", "USB", 0);
@@ -30,5 +30,7 @@ public class Main {
         imp.closeIm(); // Ja esta fechada
         imp.configurarIm(9, "i9", "USB", 0); // Tipo invalido
         Impressora.println("Conectada no final: " + imp.isConnected());
+
+        imp.imprimeTexto();
     }
 }

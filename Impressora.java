@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 class Impressora {
@@ -134,21 +135,35 @@ class Impressora {
 
         println("\n=== IMPRESSÃO DE TEXTO ===");
 
-        System.out.println("Dados: ");
-        String dados = sc.nextLine();
-        System.out.println("Posição: ");
-        int posicao = sc.nextInt();
-        System.out.println("Estilo: ");
-        int estilo = sc.nextInt();
-        System.out.println("Tamanho: ");
-        int tamanho = sc.nextInt();
-        System.out.println("Copias: ");
-        int copias = sc.nextInt();
+        String dados = "";
+        int posicao = 0;
+        int estilo = 0;
+        int tamanho = 0;
+        int copias = 0;
+        try{
+            System.out.println("Dados: ");
+            dados = sc.nextLine();
+            System.out.println("Posição: ");
+            posicao = sc.nextInt();
+            System.out.println("Estilo: ");
+            estilo = sc.nextInt();
+            System.out.println("Tamanho: ");
+            tamanho = sc.nextInt();
+            System.out.println("Copias: ");
+            copias = sc.nextInt();
+        }
+        catch (InputMismatchException e) {
+            System.out.println("Erro: Você não digitou um número inteiro válido!");
+        }
 
         int retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
 
         if(retorno >= 0) {
             for (int c = 0; c <= copias; c++) {
+                System.out.println("Impressão de Texto OK. Retorno " + retorno);
+            }
+        }else if(simular){
+            for (int c = 0; c < copias; c++) {
                 System.out.println("Impressão de Texto OK. Retorno " + retorno);
             }
         }else{
