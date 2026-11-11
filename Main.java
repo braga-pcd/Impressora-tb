@@ -30,7 +30,5 @@ public class Main {
         imp.closeIm(); // Ja esta fechada
         imp.configurarIm(9, "i9", "USB", 0); // Tipo invalido
         Impressora.println("Conectada no final: " + imp.isConnected());
-
-        imp.imprimeTexto();
     }
 }
