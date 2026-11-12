@@ -28,7 +28,7 @@ Este projeto foi desenvolvido como atividade da disciplina de **Programação Or
 O sistema foi dividido entre quatro integrantes. A atividade envolve **classes, objetos, atributos, métodos, laços de repetição e tratamento de erros**, além de controle de conexão e comandos de impressão.
 
 > [!IMPORTANT]
-> **Estado do projeto:** os arquivos de conexão e um `Main.java` de testes estão disponíveis no material analisado. Login, menu definitivo e operações de impressão devem ser conferidos depois que as partes dos integrantes forem integradas. **Não há confirmação de teste em impressora física.**
+> **Estado do projeto:** login, menu e funções extras foram integrados neste pacote. O menu e as operações foram testados em **modo simulado**. **Ainda não há confirmação de funcionamento na impressora física.**
 
 ## ✨ Funcionalidades
 
@@ -93,10 +93,9 @@ A organização abaixo reúne os arquivos fornecidos pelo professor e as classes
 ```text
 Projeto POO EM/
 ├── Main.java                         # Início do programa / menu final
-├── Usuario.java                      # Login (a integrar)
+├── Usuario.java                      # Login com 3 tentativas
 ├── Impressora.java                   # Configuração e conexão
-├── OperacoesImpressao.java           # Texto, QR Code, barras e XML SAT (a integrar)
-├── OperacoesExtras.java              # Gaveta, bip, status e cancelamento (a integrar)
+├── OperacoesExtras.java              # Gaveta, bip, status, avanço e cancelamento
 ├── ImpressoraDLL.java                # Interface JNA fornecida: NÃO ALTERAR
 ├── XMLSAT.xml                        # Exemplo de cupom de venda
 ├── CANC_SAT.xml                       # Exemplo de cancelamento
@@ -153,18 +152,17 @@ O `ImpressoraDLL.java` procura automaticamente a versão da DLL correspondente �
 
 ### 5. Execute
 
-Abra `Main.java` e utilize **Run**. Até que o menu definitivo seja integrado, o `Main.java` de teste disponível executa verificações automáticas de conexão.
+Abra `Main.java` e utilize **Run**. O programa pede login e exibe o menu. Escolha `2` para abrir a conexão e `0` para sair.
 
 #### 🧪 Teste sem impressora física
 
-No código de testes de conexão, a opção:
+No `Main.java`, a linha:
 
 ```java
-Impressora imp = new Impressora();
 imp.simular = true;
 ```
 
-permite testar **a lógica de abrir e fechar conexão**, sem acessar a DLL real. Os avisos aparecem no console.
+permite testar **o menu e as operações em modo simulado**, sem acessar a DLL real. Os avisos aparecem no console.
 
 Para tentar utilizar o equipamento real:
 
@@ -178,11 +176,11 @@ imp.simular = false;
 
 | Informação | Valor |
 |---|---|
-| Usuário | `PREENCHER APÓS DEFINIÇÃO DO GRUPO` |
-| Senha | `PREENCHER APÓS DEFINIÇÃO DO GRUPO` |
+| Usuário | `admin` |
+| Senha | `1234` |
 | Tentativas permitidas | **3** |
 
-O login faz parte dos requisitos do sistema final. **As credenciais ainda não foram informadas** nos arquivos disponíveis.
+Essas são credenciais **simples para demonstração escolar**. Não são apropriadas para um sistema de produção.
 
 ## 🧪 Testes
 
@@ -192,7 +190,7 @@ Os seguintes testes foram executados localmente com **OpenJDK 21** e o **JNA 5.1
 
 | Teste | Resultado |
 |---|---|
-| Compilar `Impressora.java`, `Main.java` de testes e `ImpressoraDLL.java` com JNA | ✅ Passou |
+| Compilar as cinco classes Java (`Main`, `Usuario`, `Impressora`, `OperacoesExtras`, `ImpressoraDLL`) com JNA | ✅ Passou |
 | Simulação de abertura e fechamento por USB | ✅ Passou |
 | Simulação de abertura e fechamento por Bluetooth | ✅ Passou |
 | Simulação de abertura e fechamento por serial | ✅ Passou |
@@ -200,16 +198,20 @@ Os seguintes testes foram executados localmente com **OpenJDK 21** e o **JNA 5.1
 | Fechar conexão já fechada | ✅ Mensagem exibida |
 | Configurar tipo inválido | ✅ Entrada rejeitada |
 | Comunicação com uma Elgin física | ⏳ Não verificada |
-| Login, menu e impressão real de cada operação | ⏳ Validar após integração |
+| Login com 3 tentativas, menu, bloqueio sem conexão e extras em simulação | ✅ Passou |
+| Impressão física de cada operação | ⏳ Testar na Elgin real |
 
 ### 📋 Testes pendentes antes da entrega
 
-- [ ] Confirmar as três tentativas de login e suas mensagens.
-- [ ] Conferir o menu completo e a opção de sair.
-- [ ] Tentar imprimir sem conexão e confirmar o bloqueio **antes** de pedir dados.
-- [ ] Verificar impressão de texto, QR Code e código de barras.
-- [ ] Testar `XMLSAT.xml` e `CANC_SAT.xml`.
-- [ ] Testar gaveta, sinal sonoro, avanço e status, **quando suportados**.
+- [x] Confirmar as três tentativas de login e suas mensagens (simulação).
+- [x] Conferir o menu completo e a opção de sair (simulação).
+- [x] Tentar imprimir sem conexão e confirmar o bloqueio **antes** de pedir dados (simulação).
+- [x] Verificar chamadas simuladas de texto, QR Code e código de barras.
+- [ ] Verificar essas impressões em equipamento real.
+- [x] Exercitar as opções simuladas de `XMLSAT.xml` e `CANC_SAT.xml`.
+- [ ] Validar a impressão dos dois XMLs na Elgin real.
+- [x] Testar os ramos simulados de gaveta, sinal sonoro, avanço e status.
+- [ ] Validar essas funções na Elgin real, **quando suportadas**.
 - [ ] Conferir erros de entrada, XML ausente e falha da DLL.
 - [ ] Demonstrar o programa em uma impressora real.
 

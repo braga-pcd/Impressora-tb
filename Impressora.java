@@ -131,9 +131,9 @@ class Impressora {
     }
 
     void imprimeTexto(){
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = Main.sc;
 
-        if(!isConnected() && !simular){
+        if(!isConnected()){
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
         }
@@ -141,21 +141,14 @@ class Impressora {
         println("\n=== IMPRESSÃO DE TEXTO ===");
 
         String dados = "";
-        int posicao = 0;
+        int posicao = 1;
         int estilo = 0;
-        int tamanho = 0;
+        int tamanho = 5;
         int copias = 0;
         int avanco = 3;
         try{
             System.out.println("Dados: ");
             dados = sc.nextLine();
-            System.out.println("Posição(0 = esquerda, 1 = centro, 2 = direita): ");
-            posicao = sc.nextInt();
-            System.out.println("Estilo(0 = fonte A, 1 = fonte B, 2 = sublinhado,\n" +
-                    "4 = invertido, 8 = negrito): ");
-            estilo = sc.nextInt();
-            System.out.println("Tamanho: ");
-            tamanho = sc.nextInt();
             System.out.println("Copias: ");
             copias = sc.nextInt();
             sc.nextLine();
@@ -200,12 +193,12 @@ class Impressora {
     }
 
     void imprimeQRCode() {
-        if (!isConnected() && !simular) {
+        if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
         }
 
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = Main.sc;
         println("\n=== IMPRESSÃO DE QR CODE ===");
 
         String dados = "";
@@ -215,11 +208,6 @@ class Impressora {
         try {
             System.out.print("Conteúdo do QR Code (ex: link ou texto): ");
             dados = sc.nextLine();
-            System.out.print("Tamanho (1 a 6): ");
-            tamanho = sc.nextInt();
-            System.out.print("Nível de Correção (1 a 4): ");
-            nivelCorrecao = sc.nextInt();
-            sc.nextLine(); // Limpa o buffer do enter
         } catch (InputMismatchException e) {
             println("Erro: Você não digitou um número inteiro válido!");
             return;
@@ -240,12 +228,12 @@ class Impressora {
     }
 
     void imprimeCodigoBarras() {
-        if (!isConnected() && !simular) {
+        if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
         }
 
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = Main.sc;
         println("\n=== IMPRESSÃO DE CÓDIGO DE BARRAS ===");
 
         int tipo = 8; // CODE 128
@@ -258,11 +246,6 @@ class Impressora {
         try {
             System.out.print("Dados do código de barras (ex: {A012345678912): ");
             dados = sc.nextLine();
-            System.out.print("Altura (1 a 255): ");
-            altura = sc.nextInt();
-            System.out.print("Largura (1 a 6): ");
-            largura = sc.nextInt();
-            sc.nextLine(); // Limpa o buffer
         } catch (InputMismatchException e) {
             println("Erro: Você não digitou um número inteiro válido!");
             return;
