@@ -1,30 +1,31 @@
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 class Impressora {
 
-    boolean impresionState = false; // Se tiver false significa que a conexão está desligada, se true ela esta ligada.
-    boolean simular = false; // true = teste / false = impressora real | depois apagar isso
+    boolean impresionState = false; // false = desligada, true = ligada
+    boolean simular = false; // true = teste, false = impressora real
 
     int tipo = 1;
-    String modelo = "i9"; // ou i8
+    String modelo = "i9";
     String conexao = "USB";
     int parametro = 0;
 
 
-    // Atalhos para mostrar mensagens no console   // // //
-    static void print(Object text) {                 //
-        System.out.print(text);                      //
-    }                                                //
-    //
-    static void println(Object text) {               //
-        System.out.println(text);                    //
-    }                                                //
-    // Fim dos atalhos para mostrar mensagens no console //
+    // Atalhos para mostrar mensagens no console
+    static void print(Object text) {
+        System.out.print(text);
+    }
+
+    static void println(Object text) {
+        System.out.println(text);
+    }
 
 
     // 1 = USB, 2 = Serial, 3 = Rede, 4 = Bluetooth
-    boolean configurarIm(int novoTipo, String novoModelo, String novaConexao, int novoParametro) {//configurar impressora com base na parte do BX
+    boolean configurarIm(int novoTipo, String novoModelo, String novaConexao, int novoParametro) {
+
         if (impresionState) {
             println("Feche a conexão antes de configurar");
             return false;
@@ -69,17 +70,20 @@ class Impressora {
         modelo = novoModelo;
         conexao = novaConexao;
         parametro = novoParametro;
+
         println("Configuração salva");
         return true;
     }
 
-    void openIm() {// isso abre conexão
+
+    void openIm() {
+
         if (impresionState) {
-            println("A conexão ja está aberta.");
+            println("A conexão já está aberta.");
             return;
         }
 
-        if (simular) { // depois remover
+        if (simular) {
             impresionState = true;
             println("[TESTE] Conexão aberta");
             return;
@@ -94,21 +98,24 @@ class Impressora {
             } else {
                 println("Erro ao conectar. Código: " + retorno);
             }
+
         } catch (LinkageError erro) {
             impresionState = false;
-            println("Não foi possivel carregar a DLL: " + erro.getMessage());
+            println("Não foi possível carregar a DLL: " + erro.getMessage());
         }
     }
 
-    void closeIm() { //isso fecha conexão
+
+    void closeIm() {
+
         if (!impresionState) {
-            println("A conexão ja ta fechada.");
+            println("A conexão já está fechada.");
             return;
         }
 
-        if (simular) { // depois remover
+        if (simular) {
             impresionState = false;
-            println("[TESTE]: Conexao fechada");
+            println("[TESTE] Conexão fechada");
             return;
         }
 
@@ -121,113 +128,183 @@ class Impressora {
             } else {
                 println("Erro ao desconectar. Código: " + retorno);
             }
+
         } catch (LinkageError erro) {
-            println("Não foi possivel acessar a DLL: " + erro.getMessage());
+            println("Não foi possível acessar a DLL: " + erro.getMessage());
         }
     }
 
-    boolean isConnected() { // isso serve pra ver se a impressora está ativa (ativa = ture | desativada = false) exemplo na linha 132
+
+    boolean isConnected() {
         return impresionState;
     }
 
-    void imprimeTexto(){
+
+    // IMPRESSÃO DE TEXTO
+    void imprimeTexto() {
+
         Scanner sc = Main.sc;
 
-        if(!isConnected()){
+        if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
         }
 
         println("\n=== IMPRESSÃO DE TEXTO ===");
 
-        String dados = "";
+        String dados;
         int posicao = 1;
         int estilo = 0;
-        int tamanho = 5;
-        int copias = 0;
-        int avanco = 3;
-        try{
-            System.out.println("Dados: ");
+        int tamanho = 0; // Tamanho normal (antes era 5)
+        int copias;
+        int avanco = 10; // Espaço antes de cortar
+
+        try {
+            println("Dados: ");
             dados = sc.nextLine();
-            System.out.println("Copias: ");
+
+            println("Cópias: ");
             copias = sc.nextInt();
             sc.nextLine();
-        }
-        catch (InputMismatchException e) {
-            System.out.println("Erro: Você não digitou um número inteiro válido!");
+
+        } catch (InputMismatchException e) {
+            sc.nextLine();
+            println("Erro: Digite um número inteiro válido!");
             return;
         }
 
+        if (dados.isBlank()) {
+            println("Erro: O texto não pode estar vazio.");
+            return;
+        }
+
+        if (copias <= 0) {
+            println("Erro: A quantidade de cópias deve ser maior que zero.");
+            return;
+        }
+
+        // MODO SIMULAÇÃO
         if (simular) {
             for (int c = 0; c < copias; c++) {
-                System.out.println("[TESTE] Impressão de Texto OK (Cópia " + (c + 1) + ")");
+                println("[TESTE] Cópia " + (c + 1) + ": " + dados);
+                println("[TESTE] Avançando 6 linhas...");
+                println("[TESTE] Cortando papel...");
             }
-            System.out.println("[TESTE] Papel cortado com avanço de " + avanco + " linhas.");
-
             return;
         }
-        boolean sucessoTotal = true;
-        int retorno = -1;
 
-        for (int c = 0; c < copias; c++) {
-            retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
+        // IMPRESSÃO REAL
+        try {
+            for (int c = 0; c < copias; c++) {
 
-            if (retorno >= 0) {
-                System.out.println("Cópia " + (c + 1) + " impressa com sucesso. Retorno " + retorno);
-            } else {
-                System.out.println("Erro ao imprimir a cópia " + (c + 1) + ". Retorno " + retorno);
-                sucessoTotal = false;
-                break;
-            }
-        }
+                // Imprime uma cópia por vez
+                int retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(
+                        dados + "\n", posicao, estilo, tamanho
+                );
 
-        if(sucessoTotal && copias >0){
-            int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
-            if(retCorte >=0){
-                println("Papel cortado comm seucesso");
+                if (retorno < 0) {
+                    println("Erro ao imprimir cópia " + (c + 1) + ": " + retorno);
+                    break;
+                }
+
+                // Avança o papel após imprimir
+                int retAvanco = ImpressoraDLL.INSTANCE.AvancaPapel(6);
+
+                if (retAvanco != 0) {
+                    println("Erro ao avançar papel: " + retAvanco);
+                    break;
+                }
+
+                // Corta cada cópia separadamente
+                int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
+
+                if (retCorte != 0) {
+                    println("Erro ao cortar papel: " + retCorte);
+                    break;
+                }
+
+                println("Cópia " + (c + 1) + " impressa e cortada com sucesso!");
+
                 ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
             }
-        }else{
-            println("AVISO: Impressão concluída, porém houve um erro ao cortar.");
+
+        } catch (LinkageError erro) {
+            println("Erro ao acessar a DLL: " + erro.getMessage());
         }
     }
 
+
+    // IMPRESSÃO DE QR CODE
     void imprimeQRCode() {
+
         if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
         }
 
         Scanner sc = Main.sc;
+
         println("\n=== IMPRESSÃO DE QR CODE ===");
 
-        String dados = "";
         int tamanho = 4;
         int nivelCorrecao = 2;
+        int avanco = 10;
 
-        try {
-            System.out.print("Conteúdo do QR Code (ex: link ou texto): ");
-            dados = sc.nextLine();
-        } catch (InputMismatchException e) {
-            println("Erro: Você não digitou um número inteiro válido!");
+        print("Conteúdo do QR Code (ex: link ou texto): ");
+        String dados = sc.nextLine();
+
+        if (dados.isBlank()) {
+            println("Erro: O QR Code não pode estar vazio.");
             return;
         }
 
         if (simular) {
-            println("[TESTE] QR Code impresso com sucesso! Conteúdo: " + dados);
+            println("[TESTE] QR Code: " + dados);
+            println("[TESTE] Avançando 6 linhas...");
+            println("[TESTE] Papel cortado.");
             return;
         }
 
-        int retorno = ImpressoraDLL.INSTANCE.ImpressaoQRCode(dados, tamanho, nivelCorrecao);
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.ImpressaoQRCode(
+                    dados, tamanho, nivelCorrecao
+            );
 
-        if (retorno >= 0) {
-            println("QR Code impresso com sucesso! Retorno: " + retorno);
-        } else {
-            println("Erro ao imprimir QR Code. Retorno: " + retorno);
+            if (retorno == 0) {
+
+                println("QR Code enviado com sucesso!");
+
+                // Avança o papel antes do corte
+                int retAvanco = ImpressoraDLL.INSTANCE.AvancaPapel(6);
+
+                if (retAvanco != 0) {
+                    println("Erro ao avançar papel: " + retAvanco);
+                    return;
+                }
+
+                // Corta depois do QR Code
+                int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
+
+                if (retCorte == 0) {
+                    println("QR Code impresso e papel cortado!");
+                    ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
+                } else {
+                    println("Erro ao cortar papel: " + retCorte);
+                }
+
+            } else {
+                println("Erro ao imprimir QR Code: " + retorno);
+            }
+
+        } catch (LinkageError erro) {
+            println("Erro ao acessar a DLL: " + erro.getMessage());
         }
     }
 
+
+    // IMPRESSÃO DE CÓDIGO DE BARRAS
     void imprimeCodigoBarras() {
+
         if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
@@ -237,43 +314,45 @@ class Impressora {
         println("\n=== IMPRESSÃO DE CÓDIGO DE BARRAS ===");
 
         int tipo = 8; // CODE 128
-        String dados = "";
         int altura = 60;
         int largura = 2;
         int hri = 2;
         int avanco = 5;
 
-        try {
-            System.out.print("Dados do código de barras (ex: {A012345678912): ");
-            dados = sc.nextLine();
-        } catch (InputMismatchException e) {
-            println("Erro: Você não digitou um número inteiro válido!");
-            return;
-        }
+        print("Dados do código de barras (ex: {A012345678912): ");
+        String dados = sc.nextLine();
 
         if (simular) {
-            println("[TESTE] Código de barras impresso com sucesso! Dados: " + dados);
+            println("[TESTE] Código de barras: " + dados);
             println("[TESTE] Papel cortado.");
             return;
         }
 
-        int retorno = ImpressoraDLL.INSTANCE.ImpressaoCodigoBarras(tipo, dados, altura, largura, hri);
+        int retorno = ImpressoraDLL.INSTANCE.ImpressaoCodigoBarras(
+                tipo, dados, altura, largura, hri
+        );
 
-        if (retorno >= 0) {
-            println("Código de barras impresso com sucesso! Retorno: " + retorno);
+        if (retorno == 0) {
+            println("Código de barras impresso com sucesso!");
 
-            // Corte e Bip no final
             int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
-            if (retCorte >= 0) {
+
+            if (retCorte == 0) {
                 println("Papel cortado com sucesso!");
                 ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
+            } else {
+                println("Erro ao cortar papel: " + retCorte);
             }
+
         } else {
             println("Erro ao imprimir código de barras. Retorno: " + retorno);
         }
     }
 
+
+    // IMPRESSÃO DE XML SAT
     void imprimeXMLSAT() {
+
         if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
@@ -290,31 +369,20 @@ class Impressora {
 
         int retorno = ImpressoraDLL.INSTANCE.ImprimeXMLSAT(caminhoXML, 0);
 
-        if (retorno >= 0) {
-            println("Cupom SAT (XML) impresso com sucesso! Retorno: " + retorno);
+        if (retorno == 0) {
+            println("Cupom SAT (XML) impresso com sucesso!");
 
-            // Corte e Bip no final
             int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
-            if (retCorte >= 0) {
+
+            if (retCorte == 0) {
                 println("Papel cortado com sucesso!");
                 ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
+            } else {
+                println("Erro ao cortar papel: " + retCorte);
             }
+
         } else {
             println("Erro ao imprimir XML SAT. Retorno: " + retorno);
         }
     }
 }
-
-
-/**
- if (isConnected() == true){
- println("A conexão está ativa");
-
- } else if (isConnected() == false){
- println("A conexão está desativada");
-
- }
- */
-
-
-
