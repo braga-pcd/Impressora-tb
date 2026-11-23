@@ -43,7 +43,7 @@ class OperacoesExtras {
             Impressora.println("[TESTE] Gaveta aberta!");
             return;
         }
-        int retorno = ImpressoraDLL.INSTANCE.AbreGaveta(0, 5, 10);
+        int retorno = ImpressoraDLL.INSTANCE.AbreGaveta(1, 5, 5);
         if (retorno == 0) {
             Impressora.println("Comando de abrir gaveta enviado!");
         } else {

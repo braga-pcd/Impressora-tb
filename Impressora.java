@@ -130,10 +130,10 @@ class Impressora {
         return impresionState;
     }
 
-    void imprimeTexto(){
+    void imprimeTexto() {
         Scanner sc = Main.sc;
 
-        if(!isConnected()){
+        if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
             return;
         }
@@ -146,14 +146,13 @@ class Impressora {
         int tamanho = 5;
         int copias = 0;
         int avanco = 3;
-        try{
+        try {
             System.out.println("Dados: ");
             dados = sc.nextLine();
             System.out.println("Copias: ");
             copias = sc.nextInt();
             sc.nextLine();
-        }
-        catch (InputMismatchException e) {
+        } catch (InputMismatchException e) {
             System.out.println("Erro: Você não digitou um número inteiro válido!");
             return;
         }
@@ -168,18 +167,20 @@ class Impressora {
         }
         boolean sucessoTotal = true;
         int retorno = -1;
+        int c = 0;
+        retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
 
-        for (int c = 0; c < copias; c++) {
-            retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
-
-            if (retorno >= 0) {
+        if (retorno >= 0) {
+            for (c = 0; c <= copias; c++) {
+                retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
                 System.out.println("Cópia " + (c + 1) + " impressa com sucesso. Retorno " + retorno);
-            } else {
-                System.out.println("Erro ao imprimir a cópia " + (c + 1) + ". Retorno " + retorno);
-                sucessoTotal = false;
-                break;
             }
+        } else {
+            System.out.println("Erro ao imprimir a cópia " + (c + 1) + ". Retorno " + retorno);
+            sucessoTotal = false;
         }
+        print(copias);
+
 
         if(sucessoTotal && copias >0){
             int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
