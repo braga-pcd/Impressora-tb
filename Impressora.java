@@ -156,15 +156,11 @@ class Impressora {
         int posicao = 1;
         int estilo = 0;
         int tamanho = 0;
-        int copias;
         int avanco = 10;
         try {
             println("Dados: ");
             dados = sc.nextLine();
 
-            println("Cópias: ");
-            copias = sc.nextInt();
-            sc.nextLine();
 
         } catch (InputMismatchException e) {
             sc.nextLine();
@@ -177,24 +173,18 @@ class Impressora {
             return;
         }
 
-        if (copias <= 0) {
-            println("Erro: A quantidade de cópias deve ser maior que zero.");
-            return;
-        }
 
 
         if (simular) {
-            for (int c = 0; c < copias; c++) {
-                println("[TESTE] Cópia " + (c + 1) + ": " + dados);
+
                 println("[TESTE] Avançando 6 linhas...");
                 println("[TESTE] Cortando papel...");
-            }
+
             return;
         }
 
         // IMPRESSÃO REAL
         try {
-            for (int c = 0; c < copias; c++) {
 
                 // Imprime uma cópia por vez
                 int retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(
@@ -202,8 +192,8 @@ class Impressora {
                 );
 
                 if (retorno < 0) {
-                    println("Erro ao imprimir cópia " + (c + 1) + ": " + retorno);
-                    break;
+                    println("Erro ao imprimir cópia "+ retorno);
+                    return;
                 }
 
                 // Avança o papel após imprimir
@@ -211,21 +201,20 @@ class Impressora {
 
                 if (retAvanco != 0) {
                     println("Erro ao avançar papel: " + retAvanco);
-                    break;
+                    return;
                 }
 
-                // Corta cada cópia separadamente
+
                 int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
 
                 if (retCorte != 0) {
                     println("Erro ao cortar papel: " + retCorte);
-                    break;
+                    return;
                 }
 
-                println("Cópia " + (c + 1) + " impressa e cortada com sucesso!");
+                println(" impressa e cortada com sucesso!");
 
                 ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
-            }
 
         } catch (LinkageError erro) {
             println("Erro ao acessar a DLL: " + erro.getMessage());
@@ -318,8 +307,8 @@ class Impressora {
         int hri = 2;
         int avanco = 5;
 
-        print("Dados do código de barras (ex: {A012345678912): ");
-        String dados = sc.nextLine();
+
+    String dados = "{A12345678912}";
 
         if (simular) {
             println("[TESTE] Código de barras: " + dados);
