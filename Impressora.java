@@ -5,7 +5,7 @@ import java.util.Scanner;
 class Impressora {
 
     boolean impresionState = false; // false = desligada, true = ligada
-    boolean simular = false; // true = teste, false = impressora real
+    boolean simular = true; // true = teste, false = impressora real
 
     int tipo = 1;
     String modelo = "i9";
@@ -155,10 +155,9 @@ class Impressora {
         String dados;
         int posicao = 1;
         int estilo = 0;
-        int tamanho = 0; // Tamanho normal (antes era 5)
+        int tamanho = 0;
         int copias;
-        int avanco = 10; // Espaço antes de cortar
-
+        int avanco = 10;
         try {
             println("Dados: ");
             dados = sc.nextLine();
@@ -183,7 +182,7 @@ class Impressora {
             return;
         }
 
-        // MODO SIMULAÇÃO
+
         if (simular) {
             for (int c = 0; c < copias; c++) {
                 println("[TESTE] Cópia " + (c + 1) + ": " + dados);
