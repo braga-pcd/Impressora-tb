@@ -21,7 +21,7 @@ public class Main {
         Impressora imp = new Impressora();
         OperacoesExtras extras = new OperacoesExtras();
 
-        imp.simular = false; // true = teste sem impressora; false = impressora real
+        imp.simular = true; // true = teste sem impressora; false = impressora real
 
         // Login: tres tentativas.
         boolean entrou = false;

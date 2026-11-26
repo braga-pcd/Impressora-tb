@@ -144,23 +144,19 @@ class Impressora {
         int posicao = 1;
         int estilo = 0;
         int tamanho = 5;
-        int copias = 0;
         int avanco = 3;
         try {
             System.out.println("Dados: ");
             dados = sc.nextLine();
-            System.out.println("Copias: ");
-            copias = sc.nextInt();
-            sc.nextLine();
+
+
         } catch (InputMismatchException e) {
             System.out.println("Erro: Você não digitou um número inteiro válido!");
             return;
         }
 
         if (simular) {
-            for (int c = 0; c < copias; c++) {
-                System.out.println("[TESTE] Impressão de Texto OK (Cópia " + (c + 1) + ")");
-            }
+            System.out.println("[TESTE] Impressão de Texto OK");
             System.out.println("[TESTE] Papel cortado com avanço de " + avanco + " linhas.");
 
             return;
@@ -171,18 +167,16 @@ class Impressora {
         retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
 
         if (retorno >= 0) {
-            for (c = 0; c <= copias; c++) {
                 retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(dados, posicao, estilo, tamanho);
-                System.out.println("Cópia " + (c + 1) + " impressa com sucesso. Retorno " + retorno);
-            }
+                System.out.println(" impressa com sucesso. Retorno " + retorno);
+
         } else {
-            System.out.println("Erro ao imprimir a cópia " + (c + 1) + ". Retorno " + retorno);
+            System.out.println("Erro ao imprimir "+ retorno);
             sucessoTotal = false;
         }
-        print(copias);
 
 
-        if(sucessoTotal && copias >0){
+        if(sucessoTotal ){
             int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
             if(retCorte >=0){
                 println("Papel cortado comm seucesso");
@@ -202,32 +196,60 @@ class Impressora {
         Scanner sc = Main.sc;
         println("\n=== IMPRESSÃO DE QR CODE ===");
 
-        String dados = "";
+        String dados;
         int tamanho = 4;
         int nivelCorrecao = 2;
+        int avanco = 10;
 
-        try {
-            System.out.print("Conteúdo do QR Code (ex: link ou texto): ");
-            dados = sc.nextLine();
-        } catch (InputMismatchException e) {
-            println("Erro: Você não digitou um número inteiro válido!");
+        System.out.print("Conteúdo do QR Code (ex: link ou texto): ");
+        dados = sc.nextLine();
+
+        if (dados.isBlank()) {
+            println("Erro: O conteúdo não pode estar vazio.");
             return;
         }
 
         if (simular) {
             println("[TESTE] QR Code impresso com sucesso! Conteúdo: " + dados);
+            println("[TESTE] Avançando 6 linhas...");
+            println("[TESTE] Cortando papel...");
             return;
         }
 
-        int retorno = ImpressoraDLL.INSTANCE.ImpressaoQRCode(dados, tamanho, nivelCorrecao);
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.ImpressaoQRCode(
+                    dados, tamanho, nivelCorrecao
+            );
 
-        if (retorno >= 0) {
-            println("QR Code impresso com sucesso! Retorno: " + retorno);
-        } else {
-            println("Erro ao imprimir QR Code. Retorno: " + retorno);
+            if (retorno != 0) {
+                println("Erro ao imprimir QR Code: " + retorno);
+                return;
+            }
+
+
+            int retAvanco = ImpressoraDLL.INSTANCE.AvancaPapel(6);
+
+            if (retAvanco != 0) {
+                println("Erro ao avançar papel: " + retAvanco);
+                return;
+            }
+
+
+            int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
+
+            if (retCorte != 0) {
+                println("Erro ao cortar papel: " + retCorte);
+                return;
+            }
+
+            println("QR Code impresso e cortado com sucesso!");
+
+            ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
+
+        } catch (LinkageError erro) {
+            println("Erro ao acessar a DLL: " + erro.getMessage());
         }
     }
-
     void imprimeCodigoBarras() {
         if (!isConnected()) {
             println("Conexão fechada. Abra a conexão antes de prosseguir.");
@@ -237,40 +259,65 @@ class Impressora {
         Scanner sc = Main.sc;
         println("\n=== IMPRESSÃO DE CÓDIGO DE BARRAS ===");
 
-        int tipo = 8; // CODE 128
-        String dados = "";
+        int tipo = 8;
+        String dados;
         int altura = 60;
         int largura = 2;
         int hri = 2;
-        int avanco = 5;
+        int avanco = 10;
 
-        try {
-            System.out.print("Dados do código de barras (ex: {A012345678912): ");
-            dados = sc.nextLine();
-        } catch (InputMismatchException e) {
-            println("Erro: Você não digitou um número inteiro válido!");
+        System.out.print("Dados do código de barras (ex: {A012345678912): ");
+        dados = sc.nextLine();
+
+        if (dados.isBlank()) {
+            println("Erro: O código de barras não pode estar vazio.");
+            return;
+        }
+
+        if (!dados.startsWith("{A") && !dados.startsWith("{B") && !dados.startsWith("{C")) {
+            println("Erro: O código deve começar com {A, {B ou {C.");
             return;
         }
 
         if (simular) {
             println("[TESTE] Código de barras impresso com sucesso! Dados: " + dados);
-            println("[TESTE] Papel cortado.");
+            println("[TESTE] Avançando 6 linhas...");
+            println("[TESTE] Cortando papel...");
             return;
         }
 
-        int retorno = ImpressoraDLL.INSTANCE.ImpressaoCodigoBarras(tipo, dados, altura, largura, hri);
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.ImpressaoCodigoBarras(
+                    tipo, dados, altura, largura, hri
+            );
 
-        if (retorno >= 0) {
-            println("Código de barras impresso com sucesso! Retorno: " + retorno);
-
-            // Corte e Bip no final
-            int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
-            if (retCorte >= 0) {
-                println("Papel cortado com sucesso!");
-                ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
+            if (retorno != 0) {
+                println("Erro ao imprimir código de barras: " + retorno);
+                return;
             }
-        } else {
-            println("Erro ao imprimir código de barras. Retorno: " + retorno);
+
+
+            int retAvanco = ImpressoraDLL.INSTANCE.AvancaPapel(6);
+
+            if (retAvanco != 0) {
+                println("Erro ao avançar papel: " + retAvanco);
+                return;
+            }
+
+
+            int retCorte = ImpressoraDLL.INSTANCE.Corte(avanco);
+
+            if (retCorte != 0) {
+                println("Erro ao cortar papel: " + retCorte);
+                return;
+            }
+
+            println("Código de barras impresso e cortado com sucesso!");
+
+            ImpressoraDLL.INSTANCE.SinalSonoro(1, 50, 5);
+
+        } catch (LinkageError erro) {
+            println("Erro ao acessar a DLL: " + erro.getMessage());
         }
     }
 

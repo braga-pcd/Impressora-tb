@@ -7,10 +7,10 @@ class OperacoesExtras {
 
     void cancelamento(Impressora imp) {
         try {
-            // O professor forneceu este XML de exemplo.
+
             String xml = Files.readString(Path.of("CANC_SAT.xml"));
 
-            // Pega a assinatura que ja existe dentro do XML.
+
             String inicioTag = "<assinaturaQRCODE>";
             String fimTag = "</assinaturaQRCODE>";
             int inicio = xml.indexOf(inicioTag);
@@ -20,19 +20,43 @@ class OperacoesExtras {
                 Impressora.println("Assinatura nao encontrada no XML.");
                 return;
             }
+
             String assinatura = xml.substring(inicio + inicioTag.length(), fim);
 
             if (imp.simular) {
                 Impressora.println("[TESTE] XML de cancelamento lido e enviado!");
+                Impressora.println("[TESTE] Avançando 6 linhas...");
+                Impressora.println("[TESTE] Cortando papel...");
                 return;
             }
 
             int retorno = ImpressoraDLL.INSTANCE.ImprimeXMLCancelamentoSAT(xml, assinatura, 0);
+
             if (retorno == 0) {
                 Impressora.println("Cancelamento enviado para impressao!");
+
+
+                int retAvanco = ImpressoraDLL.INSTANCE.AvancaPapel(6);
+
+                if (retAvanco != 0) {
+                    Impressora.println("Erro ao avançar papel: " + retAvanco);
+                    return;
+                }
+
+
+                int retCorte = ImpressoraDLL.INSTANCE.Corte(10);
+
+                if (retCorte != 0) {
+                    Impressora.println("Erro ao cortar papel: " + retCorte);
+                    return;
+                }
+
+                Impressora.println("Cancelamento impresso e cortado com sucesso!");
+
             } else {
                 Impressora.println("Erro no cancelamento. Codigo: " + retorno);
             }
+
         } catch (IOException erro) {
             Impressora.println("Arquivo CANC_SAT.xml nao encontrado ou inacessivel.");
         }
