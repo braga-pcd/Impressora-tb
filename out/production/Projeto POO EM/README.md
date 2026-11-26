@@ -197,9 +197,9 @@ Os seguintes testes foram executados localmente com **OpenJDK 21** e o **JNA 5.1
 | Simulação de abertura e fechamento por rede | ✅ Passou |
 | Fechar conexão já fechada | ✅ Mensagem exibida |
 | Configurar tipo inválido | ✅ Entrada rejeitada |
-| Comunicação com uma Elgin física | ⏳ Não verificada |
+| Comunicação com uma Elgin física | ✅ Passou |
 | Login com 3 tentativas, menu, bloqueio sem conexão e extras em simulação | ✅ Passou |
-| Impressão física de cada operação | ⏳ Testar na Elgin real |
+| Impressão física de cada operação | ✅ Passou |
 
 ### 📋 Testes pendentes antes da entrega
 
@@ -207,13 +207,13 @@ Os seguintes testes foram executados localmente com **OpenJDK 21** e o **JNA 5.1
 - [x] Conferir o menu completo e a opção de sair (simulação).
 - [x] Tentar imprimir sem conexão e confirmar o bloqueio **antes** de pedir dados (simulação).
 - [x] Verificar chamadas simuladas de texto, QR Code e código de barras.
-- [ ] Verificar essas impressões em equipamento real.
+- [x] Verificar essas impressões em equipamento real.
 - [x] Exercitar as opções simuladas de `XMLSAT.xml` e `CANC_SAT.xml`.
-- [ ] Validar a impressão dos dois XMLs na Elgin real.
+- [x] Validar a impressão dos dois XMLs na Elgin real.
 - [x] Testar os ramos simulados de gaveta, sinal sonoro, avanço e status.
-- [ ] Validar essas funções na Elgin real, **quando suportadas**.
-- [ ] Conferir erros de entrada, XML ausente e falha da DLL.
-- [ ] Demonstrar o programa em uma impressora real.
+- [x] Validar essas funções na Elgin real, **quando suportadas**.
+- [x] Conferir erros de entrada, XML ausente e falha da DLL.
+- [x] Demonstrar o programa em uma impressora real.
 
 ### 📌 Observação sobre os retornos
 
@@ -223,10 +223,10 @@ A maioria dos comandos retorna `0` quando funciona. **`ImpressaoTexto` é uma ex
 
 | Integrante | Responsabilidade |
 |---|---|
-| **Nicolas** | **Parte 1:** login e menu principal |
-| **Kauã** | **Parte 2:** configuração e conexão da impressora |
-| **Pedro** | **Parte 3:** operações de impressão |
-| **Jefferson** | **Parte 4:** funções extras, testes e documentação |
+| **Nicolas Pereira Viana** | **Parte 1:** login e menu principal |
+| **Kauã Argolo Guilherme Oliveira** | **Parte 2:** configuração e conexão da impressora |
+| **Pedro Braga Ramos** | **Parte 3:** operações de impressão |
+| **Jefferson Alves dos Santos** | **Parte 4:** funções extras, testes e documentação |
 
 > Antes da entrega, completar os nomes de todos os integrantes e conferir os commits de cada um no GitHub.
 
